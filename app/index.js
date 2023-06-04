@@ -12,47 +12,47 @@ import Song from './screens/Song'
 import Playlist from './screens/Playlist'
 import GuessSong from './screens/GuessSong'
 
-
-//import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-//import AppNavigator from '../app/navigation/AppNavigator';
-
-
-import {NavigationContainer} from '@react-navigation/native'
-import {createNativeStackNavigator} from '@react-navigation/native-stack'
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 
 
 const Home = () => {
     const router = useRouter();
     const Stack = createNativeStackNavigator();
+    const Drawer = createDrawerNavigator();
+
+    const Sidebar = () => {
+        // Add your sidebar content here
+        return (
+          <SafeAreaView>
+            {/* Sidebar content */}
+            <Text>Sidebar Content</Text>
+          </SafeAreaView>
+        );
+    };
+
+    const MainStack = () => {
+        return (
+          <Stack.Navigator independent={true}>
+            <Stack.Screen name="WelcomePage" component={WelcomePage} />
+            <Stack.Screen name="Artist" component={Artist} />
+            <Stack.Screen name="Song" component={Song} />
+            <Stack.Screen name="Playlist" component={Playlist} />
+            <Stack.Screen name="GuessSong" component={GuessSong} />
+          </Stack.Navigator>
+        );
+      };
 
     return(
-        <NavigationContainer independent={true}>
-            <SafeAreaView style={{flex:1,backgroundColor: COLORS.blackBg}}>
-                <Stack.Screen options = {{
-                    title: 'Cool',
-                    headerStyle: {backgroundColor: COLORS.blackBg},
-                    headerShadowVisible: false,
-                    headerLeft: () => (
-                        <WelcomeHeaderBtn iconUrl={icons.menu} dimension="60%" />
-                    ),
-                    headerRight: () => (
-                        <WelcomeHeaderBtn iconUrl={images.profile} dimension="100%" />
-                    ),
-                    headerTitle: ""
-                }}/>
-                <Stack.Navigator>
-                    <Stack.Screen name="WelcomePage" component={WelcomePage}></Stack.Screen>
-                    <Stack.Screen name="Artist" component={Artist}></Stack.Screen>
-                    <Stack.Screen name="Song" component={Song}></Stack.Screen>
-                    <Stack.Screen name="Playlist" component={Playlist}></Stack.Screen>
-                    <Stack.Screen name="GuessSong" component={GuessSong}></Stack.Screen>
-                </Stack.Navigator>
-            </SafeAreaView>
-        </NavigationContainer>
-    )
-}
+    <NavigationContainer independent={true}>
+      <Drawer.Navigator drawerContent={Sidebar}>
+        <Drawer.Screen name="Main" component={MainStack} />
+      </Drawer.Navigator>
+    </NavigationContainer>
+  );
+};
 
 
 export default Home;

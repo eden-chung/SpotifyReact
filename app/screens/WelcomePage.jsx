@@ -52,7 +52,7 @@ const WelcomePage = () => {
                 <Text style={styles.buttons}>Playlist analyzer</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('GuessSong')}>
+                <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Song')}>
                 <Text style={styles.buttons}>Guess the song game</Text>
                 </TouchableOpacity>
             </View>
