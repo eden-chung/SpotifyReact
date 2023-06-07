@@ -18,28 +18,10 @@ const Sidebar = () => {
 };
 
 const WelcomePage = () => {
-    console.log("test")
     const navigation = useNavigation();
 
-    const pressButton = () => {
-        console.log("check");
-        navigation.openDrawer();
-    };
-    
     return (
     <SafeAreaView style={{flex:1,backgroundColor: COLORS.blackBg}}>
-        <Stack.Screen options = {{
-                title: 'Cool',
-                headerStyle: {backgroundColor: COLORS.lightWhite},
-                headerShadowVisible: false,
-                headerLeft: () => (
-                    <WelcomeHeaderBtn iconUrl={icons.menu} dimension="60%" handlePress={pressButton}/>
-                ),
-                headerRight: () => (
-                    <WelcomeHeaderBtn iconUrl={images.profile} dimension="100%" handlePress={pressButton}/>
-                ),
-                headerTitle: ""
-                }}/>
         <ScrollView showsVerticalScrollIndicator={false}>
             <View>
             <View style={styles.container}>
@@ -88,4 +70,20 @@ export default WelcomePage
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}>
             </Welcome>
-*/}
+
+For the custom header, but can't get the sidebar to work with it
+<Stack.Screen options = {{
+    title: 'Cool',
+    headerStyle: {backgroundColor: COLORS.lightWhite},
+    headerShadowVisible: false,
+    headerLeft: () => (
+        <WelcomeHeaderBtn iconUrl={icons.menu} dimension="60%" handlePress={pressButton}/>
+    ),
+    headerRight: () => (
+        <WelcomeHeaderBtn iconUrl={images.profile} dimension="100%" handlePress={pressButton}/>
+    ),
+    headerTitle: ""
+    }}/>
+*/
+
+}
