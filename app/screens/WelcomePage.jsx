@@ -8,8 +8,23 @@ import { Nearbyjobs, Popularartists, WelcomeHeaderBtn, Welcome, DrawerButton} fr
 
 import styles from '../../components/welcome.style'
 
+const Sidebar = () => {
+    return (
+    <SafeAreaView>
+      {/* Sidebar content */}
+      <Text>Sidebar Content</Text>
+    </SafeAreaView>
+    )
+};
+
 const WelcomePage = () => {
+    console.log("test")
     const navigation = useNavigation();
+
+    const pressButton = () => {
+        console.log("check");
+        navigation.openDrawer();
+    };
     
     return (
     <SafeAreaView style={{flex:1,backgroundColor: COLORS.blackBg}}>
@@ -18,10 +33,10 @@ const WelcomePage = () => {
                 headerStyle: {backgroundColor: COLORS.lightWhite},
                 headerShadowVisible: false,
                 headerLeft: () => (
-                    <WelcomeHeaderBtn iconUrl={icons.menu} dimension="60%" />
+                    <WelcomeHeaderBtn iconUrl={icons.menu} dimension="60%" handlePress={pressButton}/>
                 ),
                 headerRight: () => (
-                    <WelcomeHeaderBtn iconUrl={images.profile} dimension="100%" />
+                    <WelcomeHeaderBtn iconUrl={images.profile} dimension="100%" handlePress={pressButton}/>
                 ),
                 headerTitle: ""
                 }}/>
