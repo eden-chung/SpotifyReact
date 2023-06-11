@@ -16,7 +16,7 @@ const Artist = ({info}) => {
       <View style={styles.searchContainer}>
         <View style = {styles.searchWrapper}>
           <TextInput 
-          placeholder="What are you looking for?"
+          placeholder="Enter an artist"
           placeholderTextColor="grey"/>
         </View>
         <TouchableOpacity style={styles.searchBtn}>

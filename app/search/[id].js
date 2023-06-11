@@ -8,6 +8,7 @@ import { WelcomeHeaderBtn, NearbyJobCard } from '../../components'
 import { COLORS, icons, SIZES } from '../../constants'
 import styles from '../../styles/search'
 
+{/*
 const JobSearch = () => {
     const params = useSearchParams();
     const router = useRouter()
@@ -27,7 +28,7 @@ const JobSearch = () => {
                 url: `https://jsearch.p.rapidapi.com/search`,
                 headers: {
                     "X-RapidAPI-Key": 'da44e7b9c2msh08b306ecc43d8b9p1385cfjsn1388e9297fd4',
-                    "X-RapidAPI-Host": "jsearch.p.rapidapi.com",
+                    "X-RapidAPI-Host": "spotify23.p.rapidapi.com",
                 },
                 params: {
                     query: params.id,
@@ -134,3 +135,31 @@ const JobSearch = () => {
 }
 
 export default JobSearch
+*/}
+
+{/*
+
+const CLIENT_ID = "516b7b9290614e308a2045dcadea221d"
+const CLIENT_SECRET = "4e2e0f5252f249e08701b12db400ce7a"
+
+useEffect(() => {
+    var authParameters = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
+    }
+    fetch('https://accounts.spotify.com/api/token', authParameters)
+        .then(result => result.json())
+        .then(data => console.log(data))
+}, [])
+
+if (!code) {
+    redirectToAuthCodeFlow(CLIENT_ID);
+} else {
+    const accessToken = await getAccessToken(CLIENT_ID, code);
+    const profile = await fetchProfile(accessToken);
+    populateUI(profile);
+}
+*/}
