@@ -14,6 +14,13 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     lineHeight: 35,
   },
+  artistInfo: {
+    marginTop: 15,
+    fontFamily: FONT.regular,
+    fontSize: SIZES.medium,
+    color: COLORS.white,
+    lineHeight: 35,
+  },
   spotify: {
     fontFamily: FONT.medium,
     fontSize: SIZES.large,
