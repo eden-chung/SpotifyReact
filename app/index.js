@@ -20,6 +20,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { acc } from 'react-native-reanimated';
 
 
 
@@ -46,33 +47,6 @@ const Home = () => {
         .then(data => setAccessToken(data.access_token))
   }, [])
 
-  async function search() {
-    const searchInput = "Taylor Swift"
-    console.log("Search for " + searchInput)
-
-    var searchParameters = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + accessToken
-      }
-    }
-
-    try {
-      var response = await fetch('https://api.spotify.com/v1/search?q=Taylor+Swift&type=artist', searchParameters);
-      if (response.status === 200) {
-        var data = await response.json();
-        console.log(data.artists.items[0].followers.total);
-        console.log(data.artists.items[0].name)
-      } else {
-        console.log('Error:', response.status);
-      }
-    } catch (error) {
-      console.log('Error:', error.message);
-    }
-
-  }
-
   const router = useRouter();
   const Stack = createNativeStackNavigator();
   const Drawer = createDrawerNavigator();
@@ -85,7 +59,7 @@ const Home = () => {
         <SafeAreaView style={styles.background}>
           {/* Sidebar content */}
           <Text>Sidebar Content</Text>
-          <TouchableOpacity onPress={() => search()}>
+          <TouchableOpacity onPress={() => navigation.navigate("WelcomePage")}>
             <Text style={styles.text}>Home</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate("Artist")}>
@@ -103,11 +77,12 @@ const Home = () => {
         </SafeAreaView>
       );
   };
+  console.log(accessToken)
   return(
   <NavigationContainer independent={true}>
     <Drawer.Navigator drawerContent={Sidebar} screenOptions = {{drawerStyle: {width: Dimensions.get("screen").width * 0.5 }}}>
       <Drawer.Screen name="WelcomePage" component={WelcomePage} />
-      <Drawer.Screen name="Artist" component={Artist} />
+      <Drawer.Screen name="Artist" component={() => <Artist accessToken={accessToken} />}/>
       <Drawer.Screen name="Song" component={Song} />
       <Drawer.Screen name="Playlist" component={Playlist} />
       <Drawer.Screen name="GuessSong" component={GuessSong} />
