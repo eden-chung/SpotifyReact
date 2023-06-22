@@ -1,11 +1,11 @@
 import React from 'react'
-import { View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native'
+import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native'
 
 import { useState } from 'react';
 
-//import styles from '../../components/artist.style.jsx'
+import styles from '../../components/artist.style.jsx'
 
-import styles from '../../components/welcome.style'
+//import styles from '../../components/welcome.style'
 import {COLORS, icons, SIZES} from '../../constants'
 import { acc } from 'react-native-reanimated';
 
@@ -83,9 +83,6 @@ const Artist = ({ accessToken }) => {
 
   return (
     <View style={{flex: 1, backgroundColor: COLORS.blackBg}}>
-      <View style={styles.container}>
-        <Text style={styles.userName}>Hello!</Text>
-      </View>
 
       <View style={styles.searchContainer}>
         <View style = {styles.searchWrapper}>
@@ -126,13 +123,43 @@ const Artist = ({ accessToken }) => {
 
       
       {artistInfo && (
-      <View>
-        <Text style={styles.artistInfo}>Artist Name: {artistInfo.name}</Text>
-        <Image source={{uri: artistInfo.imageURL}} style={{ width: 200, height: 200 }} />
-        <Text style={styles.artistInfo}>Genre: {artistInfo.genre}</Text>
-        <Text style={styles.artistInfo}>Popularity: {artistInfo.popularity}</Text>
-        <Text style={styles.artistInfo}>Followers: {artistInfo.followers}</Text>
-      </View>
+        
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent} keyboardShouldPersistTaps="always" showsVerticalScrollIndicator={true}>
+          <Image source={{uri: artistInfo.imageURL}} style={{ width: 200, height: 200 }} />
+          <View style={styles.textWrapper}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.header}>Basic Artist Information</Text>
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={styles.artistInfo}>Artist Name: {artistInfo.name}</Text>
+              <Text style={styles.artistInfo}>Genre: {artistInfo.genre}</Text>
+              <Text style={styles.artistInfo}>Popularity: {artistInfo.popularity}</Text>
+              <Text style={styles.artistInfo}>Followers: {artistInfo.followers}</Text>
+            </View>
+          </View>
+          <View style={styles.textWrapper}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.header}>Albums Artist Information</Text>
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={styles.artistInfo}>Artist Name: {artistInfo.name}</Text>
+              <Text style={styles.artistInfo}>Genre: {artistInfo.genre}</Text>
+              <Text style={styles.artistInfo}>Popularity: {artistInfo.popularity}</Text>
+              <Text style={styles.artistInfo}>Followers: {artistInfo.followers}</Text>
+            </View>
+          </View>
+          <View style={styles.textWrapper}>
+          <View style={styles.headerContainer}>
+              <Text style={styles.header}>Other Artist Information</Text>
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={styles.artistInfo}>Artist Name: {artistInfo.name}</Text>
+              <Text style={styles.artistInfo}>Genre: {artistInfo.genre}</Text>
+              <Text style={styles.artistInfo}>Popularity: {artistInfo.popularity}</Text>
+              <Text style={styles.artistInfo}>Followers: {artistInfo.followers}</Text>
+            </View>
+          </View>
+        </ScrollView>
     )}
     </View>
 
