@@ -44,14 +44,22 @@ const styles = StyleSheet.create({
         fontSize: SIZES.medium,
         color: COLORS.white,
         lineHeight: 35,
+        textAlign: "center",
     },
     headerContainer: {
         width: 250,
-        height: "15%",
+        maxHeight: "20%",
         backgroundColor: COLORS.green,
         borderRadius: SIZES.medium,
         justifyContent: "center",
         alignItems: "center",
+        alignSelf: "center",
+    },
+    title: {
+      fontFamily: FONT.bold,
+      fontSize: SIZES.large,
+      color: COLORS.white,
+      lineHeight: 50,
     },
     header: {
         fontFamily: FONT.bold,
@@ -74,6 +82,7 @@ const styles = StyleSheet.create({
         borderRadius: SIZES.medium,
         justifyContent: "left",
         alignItems: "left",
+        alignSelf: "center",
     },
     textWrapper: {
         marginRight: SIZES.small,
@@ -86,6 +95,17 @@ const styles = StyleSheet.create({
     textContainer: {
         flex: 1,
         marginHorizontal: SIZES.medium,
+    },
+    albumsection: {
+      marginRight: SIZES.small,
+      width: 350,
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: SIZES.medium,
+      marginTop: 10,
+      marginBottom: 20, // Increase the value to add more space below the container
+      marginVertical: 5,
+      alignSelf: "center",
     }
 });
 

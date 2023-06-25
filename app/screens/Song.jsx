@@ -29,6 +29,7 @@ const Song = ({ accessToken }) => {
       var response = await fetch('https://api.spotify.com/v1/search?q=' + search + '&type=track', searchParameters);
       if (response.status === 200) {
         var data = await response.json();
+        console.log(data)
         const song1 = data.tracks.items[0];
         if (song1) {
           fetchSongInfo(song1.href)

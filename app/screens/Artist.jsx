@@ -97,7 +97,6 @@ const Artist = ({ accessToken }) => {
           var dataAlbums = await response.json();
           
           const albums = dataAlbums.items.map((album) => {
-            console.log("image url", album.images[0].url)
             return {
               name: album.name,
               albumImageURL: album.images[0].url,
@@ -162,13 +161,13 @@ const Artist = ({ accessToken }) => {
       {artistInfo && albumsInfo && (
         
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent} keyboardShouldPersistTaps="always" showsVerticalScrollIndicator={true}>
+          <Text style={styles.title}>{artistInfo.name}</Text>
           <Image source={{uri: artistInfo.imageURL}} style={{ width: 200, height: 200 }} />
           <View style={styles.textWrapper}>
             <View style={styles.headerContainer}>
               <Text style={styles.header}>Basic Artist Information</Text>
             </View>
             <View style={styles.infoContainer}>
-              <Text style={styles.artistInfo}>Artist Name: {artistInfo.name}</Text>
               <Text style={styles.artistInfo}>Genre: {artistInfo.genre}</Text>
               <Text style={styles.artistInfo}>Popularity: {artistInfo.popularity}</Text>
               <Text style={styles.artistInfo}>Followers: {artistInfo.followers}</Text>
@@ -180,14 +179,16 @@ const Artist = ({ accessToken }) => {
             </View>
             <View style={styles.infoContainer}>
             {albumsInfo.albums && albumsInfo.albums.map((album, index) => (
-              <View key={index}>
+              <View key={index} style={styles.albumsection}>
                 <Image source={{uri: album.albumImageURL}} style={{ width: 200, height: 200 }} />
-                <Text key={index} style={styles.artistInfo}>Album Name: {album.name}</Text>
+                <View styles={{width: 350, justifyContent: "left"}}>
+                  <Text key={index} style={styles.artistInfo}>Album Name: {album.name}</Text>
+                  <Text style={styles.artistInfo}>Release date: {album.albumReleaseDate}</Text>
+                  <Text style={styles.artistInfo}>Total tracks: {album.albumTotalTracks}</Text>
+                </View>
               </View>
             ))}
-              <Text style={styles.artistInfo}>Genre: {artistInfo.genre}</Text>
-              <Text style={styles.artistInfo}>Popularity: {artistInfo.popularity}</Text>
-              <Text style={styles.artistInfo}>Followers: {artistInfo.followers}</Text>
+              
             </View>
           </View>
         </ScrollView>
