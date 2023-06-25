@@ -12,7 +12,7 @@ import { acc } from 'react-native-reanimated';
 const Song = ({ accessToken }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [artistInfo, setArtistInfo] = useState(null);
+  const [songInfo, setSongInfo] = useState(null);
 
   async function search(search) {
     setSearchResults([])
@@ -29,10 +29,9 @@ const Song = ({ accessToken }) => {
       var response = await fetch('https://api.spotify.com/v1/search?q=' + search + '&type=track', searchParameters);
       if (response.status === 200) {
         var data = await response.json();
-        console.log(data)
-        const song1 = data.tracks.items[0];
-        if (song1) {
-          fetchSongInfo(song1.href)
+        const href = data.tracks.href
+        if (href) {
+          fetchSongInfo(href)
         }
       } else {
         console.log('Error:', response.status);
@@ -40,10 +39,8 @@ const Song = ({ accessToken }) => {
     } catch (error) {
       console.log('Error:', error.message);
     }
-    data.artists.items[0].href
 
     async function fetchSongInfo(songHref) {
-      console.log(data.artists.items[0].href)
 
       var searchParameters = {
         method: 'GET',
@@ -56,19 +53,21 @@ const Song = ({ accessToken }) => {
       try {
         var response = await fetch(songHref, searchParameters)
         if (response.status === 200) {
-          var dataArtist = await response.json();
-          artistName = dataArtist.name
-          artistImageURL = dataArtist.images[0].url
-          genre = dataArtist.genres
-          popularity = dataArtist.popularity
-          followers = dataArtist.followers.total
-          console.log("test", artistName, artistImageURL, genre, popularity, followers)
-          setArtistInfo({
-            name: artistName,
-            imageURL: artistImageURL,
-            genre: genre,
+          var dataSong = await response.json();
+
+          songName = dataSong.tracks.items[0].name;
+          console.log(songName)
+          artistName = dataSong.tracks.items[0].album.artists[0].name;
+          albumImageURL = dataSong.tracks.items[0].album.images[0].url;
+          durationMS = dataSong.tracks.items[0].duration_ms;
+          popularity = dataSong.tracks.items[0].popularity;
+      
+          setSongInfo({
+            songName: songName,
+            artistName: artistName,
+            albumImageURL: albumImageURL,
+            durationMS: durationMS,
             popularity: popularity,
-            followers: followers
           });
         } else {
           console.log('Error:', response.status);
@@ -87,7 +86,7 @@ const Song = ({ accessToken }) => {
         <View style = {styles.searchWrapper}>
           <TextInput 
           value ={searchTerm}
-          placeholder="Enter an artist"
+          placeholder="Enter a song"
           placeholderTextColor="grey"
           onChangeText={text => setSearchTerm(text)}/>
         </View>
@@ -114,58 +113,29 @@ const Song = ({ accessToken }) => {
           horizontal
         />
       </View>
-
-      {/* Rendering the artist info */}
-      {searchResults.map((artist) => (
-      <Text key={artist.id}>{artist.name}</Text>
+      
+      {searchResults.map((song) => (
+      <Text key={song.id}>{song.name}</Text>
       ))}
 
-      
-      {artistInfo && (
-        
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent} keyboardShouldPersistTaps="always" showsVerticalScrollIndicator={true}>
-          <Image source={{uri: artistInfo.imageURL}} style={{ width: 200, height: 200 }} />
+      {songInfo && (
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent} keyboardShouldPersistTaps="always" showsVerticalScrollIndicator={true}>
+          <Text style={styles.title}>{songInfo.songName}</Text>
+          <Image source={{uri: songInfo.albumImageURL}} style={{ width: 200, height: 200 }} />
           <View style={styles.textWrapper}>
             <View style={styles.headerContainer}>
-              <Text style={styles.header}>Basic Artist Information</Text>
+              <Text style={styles.header}>Song Information</Text>
             </View>
             <View style={styles.infoContainer}>
-              <Text style={styles.artistInfo}>Artist Name: {artistInfo.name}</Text>
-              <Text style={styles.artistInfo}>Genre: {artistInfo.genre}</Text>
-              <Text style={styles.artistInfo}>Popularity: {artistInfo.popularity}</Text>
-              <Text style={styles.artistInfo}>Followers: {artistInfo.followers}</Text>
-            </View>
-          </View>
-          <View style={styles.textWrapper}>
-            <View style={styles.headerContainer}>
-              <Text style={styles.header}>Albums Artist Information</Text>
-            </View>
-            <View style={styles.infoContainer}>
-              <Text style={styles.artistInfo}>Artist Name: {artistInfo.name}</Text>
-              <Text style={styles.artistInfo}>Genre: {artistInfo.genre}</Text>
-              <Text style={styles.artistInfo}>Popularity: {artistInfo.popularity}</Text>
-              <Text style={styles.artistInfo}>Followers: {artistInfo.followers}</Text>
-            </View>
-          </View>
-          <View style={styles.textWrapper}>
-          <View style={styles.headerContainer}>
-              <Text style={styles.header}>Other Artist Information</Text>
-            </View>
-            <View style={styles.infoContainer}>
-              <Text style={styles.artistInfo}>Artist Name: {artistInfo.name}</Text>
-              <Text style={styles.artistInfo}>Genre: {artistInfo.genre}</Text>
-              <Text style={styles.artistInfo}>Popularity: {artistInfo.popularity}</Text>
-              <Text style={styles.artistInfo}>Followers: {artistInfo.followers}</Text>
+              <Text style={styles.artistInfo}>Artist: {songInfo.artistName}</Text>
+              <Text style={styles.artistInfo}>Popularity: {songInfo.popularity}</Text>
+              <Text style={styles.artistInfo}>Followers: {songInfo.durationMS}</Text>
             </View>
           </View>
         </ScrollView>
-    )}
+      )}
+    
     </View>
-
-
-
-
- 
   )
 }
 
