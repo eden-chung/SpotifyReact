@@ -13,6 +13,7 @@ const Artist = ({ accessToken }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [artistInfo, setArtistInfo] = useState(null);
+  const [albumsInfo, setAlbumsInfo] = useState(null);
 
   async function search(search) {
     setSearchResults([])
@@ -30,10 +31,10 @@ const Artist = ({ accessToken }) => {
       if (response.status === 200) {
         var data = await response.json();
         const artist1 = data.artists.items[0];
+        const artistId = data.artists.items[0].id
         if (artist1) {
-          console.log(data.artists.items[0].followers.total);
-          console.log(data.artists.items[0].name)
           fetchArtistInfo(artist1.href)
+          fetchAlbums(artistId)
         }
       } else {
         console.log('Error:', response.status);
@@ -41,7 +42,7 @@ const Artist = ({ accessToken }) => {
     } catch (error) {
       console.log('Error:', error.message);
     }
-    data.artists.items[0].href
+    
 
     async function fetchArtistInfo(artistHref) {
       console.log(data.artists.items[0].href)
@@ -70,6 +71,42 @@ const Artist = ({ accessToken }) => {
             genre: genre,
             popularity: popularity,
             followers: followers
+          });
+        } else {
+          console.log('Error:', response.status);
+        }
+      } catch (error) {
+        console.log('Error:', error.message);
+      }
+    }
+
+    async function fetchAlbums(artistId) {
+
+      var searchParameters = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + accessToken
+        }
+      }
+
+      try {
+        var response = await fetch('https://api.spotify.com/v1/artists/' + artistId + '/albums', searchParameters);
+        
+        if (response.status === 200) {
+          var dataAlbums = await response.json();
+          
+          const albums = dataAlbums.items.map((album) => {
+            console.log("image url", album.images[0].url)
+            return {
+              name: album.name,
+              albumImageURL: album.images[0].url,
+              albumReleaseDate: album.release_date,
+              albumTotalTracks: album.total_tracks,
+            };
+          });
+          setAlbumsInfo({
+            albums
           });
         } else {
           console.log('Error:', response.status);
@@ -122,7 +159,7 @@ const Artist = ({ accessToken }) => {
       ))}
 
       
-      {artistInfo && (
+      {artistInfo && albumsInfo && (
         
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent} keyboardShouldPersistTaps="always" showsVerticalScrollIndicator={true}>
           <Image source={{uri: artistInfo.imageURL}} style={{ width: 200, height: 200 }} />
@@ -142,18 +179,12 @@ const Artist = ({ accessToken }) => {
               <Text style={styles.header}>Albums Artist Information</Text>
             </View>
             <View style={styles.infoContainer}>
-              <Text style={styles.artistInfo}>Artist Name: {artistInfo.name}</Text>
-              <Text style={styles.artistInfo}>Genre: {artistInfo.genre}</Text>
-              <Text style={styles.artistInfo}>Popularity: {artistInfo.popularity}</Text>
-              <Text style={styles.artistInfo}>Followers: {artistInfo.followers}</Text>
-            </View>
-          </View>
-          <View style={styles.textWrapper}>
-          <View style={styles.headerContainer}>
-              <Text style={styles.header}>Other Artist Information</Text>
-            </View>
-            <View style={styles.infoContainer}>
-              <Text style={styles.artistInfo}>Artist Name: {artistInfo.name}</Text>
+            {albumsInfo.albums && albumsInfo.albums.map((album, index) => (
+              <View key={index}>
+                <Image source={{uri: album.albumImageURL}} style={{ width: 200, height: 200 }} />
+                <Text key={index} style={styles.artistInfo}>Album Name: {album.name}</Text>
+              </View>
+            ))}
               <Text style={styles.artistInfo}>Genre: {artistInfo.genre}</Text>
               <Text style={styles.artistInfo}>Popularity: {artistInfo.popularity}</Text>
               <Text style={styles.artistInfo}>Followers: {artistInfo.followers}</Text>

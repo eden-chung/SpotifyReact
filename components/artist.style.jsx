@@ -60,16 +60,16 @@ const styles = StyleSheet.create({
         lineHeight: 35,
     },
     scrollView: {
-      flex: 1,
+      //flex: 1,
     },
     scrollViewContent: {
       flexGrow: 1,
       alignItems: "center",
       borderRadius: SIZES.medium,
-      marginBottom: 300,
+      //marginBottom: 300,
     },
     infoContainer: {
-        width: 250,
+        width: 350,
         height: 50,
         borderRadius: SIZES.medium,
         justifyContent: "left",

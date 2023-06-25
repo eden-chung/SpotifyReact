@@ -83,7 +83,7 @@ const Home = () => {
     <Drawer.Navigator drawerContent={Sidebar} screenOptions = {{drawerStyle: {width: Dimensions.get("screen").width * 0.5 }}}>
       <Drawer.Screen name="WelcomePage" component={WelcomePage} />
       <Drawer.Screen name="Artist" component={() => <Artist accessToken={accessToken} />}/>
-      <Drawer.Screen name="Song" component={Song} />
+      <Drawer.Screen name="Song" component={() => <Song accessToken={accessToken} />} />
       <Drawer.Screen name="Playlist" component={Playlist} />
       <Drawer.Screen name="GuessSong" component={GuessSong} />
     </Drawer.Navigator>
