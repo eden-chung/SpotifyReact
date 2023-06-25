@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
       tintColor: COLORS.white,
     },
     artistInfo: {
-        marginTop: 15,
+        //marginTop: 15,
         fontFamily: FONT.bold,
         fontSize: SIZES.medium,
         color: COLORS.white,
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     },
     infoContainer: {
         width: 350,
-        height: 50,
+        //height: 50,
         borderRadius: SIZES.medium,
         justifyContent: "left",
         alignItems: "left",
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "left",
         borderRadius: SIZES.medium,
-        height: 250,
+        //height: 250,
         marginVertical: 5,
     },
     textContainer: {
