@@ -85,46 +85,6 @@ const Song = ({ accessToken }) => {
 
   
 
-  useEffect(() => {
-    // Load the audio file when the component mounts
-    loadAudio();
-
-    // Clean up resources when the component unmounts
-    return () => {
-      if (sound) {
-        sound.unloadAsync();
-      }
-    };
-  }, []);
-
-  const loadAudio = async () => {
-    try {
-      // URL of the MP3 file
-      const audioUrl = songInfo.songmp3;
-
-      // Create a new sound object
-      const { sound } = await Audio.Sound.createAsync({ uri: audioUrl });
-
-      // Set the sound object in the state
-      setSound(sound);
-    } catch (error) {
-      console.log('Error loading audio:', error);
-    }
-  };
-
-  const playAudio = async () => {
-    try {
-      if (sound) {
-        // Play the audio
-        await sound.playAsync();
-      }
-    } catch (error) {
-      console.log('Error playing audio:', error);
-    }
-  };
-
-  
-
 
   return (
     <View style={{flex: 1, backgroundColor: COLORS.blackBg}}>
@@ -177,9 +137,6 @@ const Song = ({ accessToken }) => {
               <Text style={styles.artistInfo}>Artist: {songInfo.artistName}</Text>
               <Text style={styles.artistInfo}>Popularity: {songInfo.popularity}</Text>
               <Text style={styles.artistInfo}>Duration: {songInfo.durationMS}</Text>
-            </View>
-            <View>
-              <Button title="Play" onPress={playAudio} />
             </View>
           </View>
         </ScrollView>
