@@ -108,11 +108,13 @@ const Song = ({ accessToken }) => {
 
       // Create a new sound object
       //const { sound } = await Audio.Sound.createAsync({ uri: audioUrl });
+      const { sound: playbackObject } = await Audio.Sound.createAsync({uri: audioUrl});
+      setSound(playbackObject)
 
-      const sound = new Audio.Sound()
-      await sound.loadAsync(require('./Eden.mp3'), {shouldPlay: true})
-      await sound.setPositionAsync(0);
-      await sound.playAsync();
+      await playbackObject.setPositionAsync(0);
+      await playbackObject.playAsync();
+
+      
 
       // Set the sound object in the state
       setSound(sound);
