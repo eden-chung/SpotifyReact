@@ -7,12 +7,12 @@ import styles from '../../components/artist.style.jsx'
 
 //import styles from '../../components/welcome.style'
 import {COLORS, icons, SIZES} from '../../constants'
-import { acc } from 'react-native-reanimated';
 
 const Song = ({ accessToken }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [songInfo, setSongInfo] = useState(null);
+  const [sound, setSound] = useState(null);
 
   async function search(search) {
     setSearchResults([])
@@ -40,6 +40,8 @@ const Song = ({ accessToken }) => {
       console.log('Error:', error.message);
     }
 
+    
+
     async function fetchSongInfo(songHref) {
 
       var searchParameters = {
@@ -61,6 +63,7 @@ const Song = ({ accessToken }) => {
           albumImageURL = dataSong.tracks.items[0].album.images[0].url;
           durationMS = dataSong.tracks.items[0].duration_ms;
           popularity = dataSong.tracks.items[0].popularity;
+          songmp3 = dataSong.tracks.items[0].preview_url;
       
           setSongInfo({
             songName: songName,
@@ -68,6 +71,7 @@ const Song = ({ accessToken }) => {
             albumImageURL: albumImageURL,
             durationMS: durationMS,
             popularity: popularity,
+            songmp3: songmp3,
           });
         } else {
           console.log('Error:', response.status);
@@ -78,6 +82,49 @@ const Song = ({ accessToken }) => {
     }
     
   }
+
+  
+
+  useEffect(() => {
+    // Load the audio file when the component mounts
+    loadAudio();
+
+    // Clean up resources when the component unmounts
+    return () => {
+      if (sound) {
+        sound.unloadAsync();
+      }
+    };
+  }, []);
+
+  const loadAudio = async () => {
+    try {
+      // URL of the MP3 file
+      const audioUrl = songInfo.songmp3;
+
+      // Create a new sound object
+      const { sound } = await Audio.Sound.createAsync({ uri: audioUrl });
+
+      // Set the sound object in the state
+      setSound(sound);
+    } catch (error) {
+      console.log('Error loading audio:', error);
+    }
+  };
+
+  const playAudio = async () => {
+    try {
+      if (sound) {
+        // Play the audio
+        await sound.playAsync();
+      }
+    } catch (error) {
+      console.log('Error playing audio:', error);
+    }
+  };
+
+  
+
 
   return (
     <View style={{flex: 1, backgroundColor: COLORS.blackBg}}>
@@ -129,7 +176,10 @@ const Song = ({ accessToken }) => {
             <View style={styles.infoContainer}>
               <Text style={styles.artistInfo}>Artist: {songInfo.artistName}</Text>
               <Text style={styles.artistInfo}>Popularity: {songInfo.popularity}</Text>
-              <Text style={styles.artistInfo}>Followers: {songInfo.durationMS}</Text>
+              <Text style={styles.artistInfo}>Duration: {songInfo.durationMS}</Text>
+            </View>
+            <View>
+              <Button title="Play" onPress={playAudio} />
             </View>
           </View>
         </ScrollView>
