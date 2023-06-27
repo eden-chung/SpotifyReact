@@ -1,7 +1,8 @@
 import React from 'react'
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native'
+import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, FlatList, Button } from 'react-native'
+import { Audio } from 'expo-av';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import styles from '../../components/artist.style.jsx'
 
@@ -13,6 +14,7 @@ const Song = ({ accessToken }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [songInfo, setSongInfo] = useState(null);
   const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   async function search(search) {
     setSearchResults([])
@@ -82,28 +84,35 @@ const Song = ({ accessToken }) => {
     }
     
   }
-
   
 
   useEffect(() => {
     // Load the audio file when the component mounts
-    loadAudio();
-
+    if (songInfo && songInfo.songmp3) {
+      loadAudio();
+    }
+  
     // Clean up resources when the component unmounts
     return () => {
       if (sound) {
         sound.unloadAsync();
       }
     };
-  }, []);
+  }, [songInfo]);
 
   const loadAudio = async () => {
     try {
       // URL of the MP3 file
       const audioUrl = songInfo.songmp3;
+      console.log("audio", audioUrl)
 
       // Create a new sound object
-      const { sound } = await Audio.Sound.createAsync({ uri: audioUrl });
+      //const { sound } = await Audio.Sound.createAsync({ uri: audioUrl });
+
+      const sound = new Audio.Sound()
+      await sound.loadAsync(require('./Eden.mp3'), {shouldPlay: true})
+      await sound.setPositionAsync(0);
+      await sound.playAsync();
 
       // Set the sound object in the state
       setSound(sound);
@@ -117,6 +126,7 @@ const Song = ({ accessToken }) => {
       if (sound) {
         // Play the audio
         await sound.playAsync();
+        setIsPlaying(true);
       }
     } catch (error) {
       console.log('Error playing audio:', error);
