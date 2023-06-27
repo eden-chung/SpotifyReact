@@ -108,13 +108,7 @@ const Song = ({ accessToken }) => {
 
       // Create a new sound object
       //const { sound } = await Audio.Sound.createAsync({ uri: audioUrl });
-      const { sound: playbackObject } = await Audio.Sound.createAsync({uri: audioUrl});
-      setSound(playbackObject)
-
-      await playbackObject.setPositionAsync(0);
-      await playbackObject.playAsync();
-
-      
+      const { sound } = await Audio.Sound.createAsync({uri: audioUrl});
 
       // Set the sound object in the state
       setSound(sound);
@@ -127,11 +121,24 @@ const Song = ({ accessToken }) => {
     try {
       if (sound) {
         // Play the audio
+        //await sound.setPositionAsync(0);
         await sound.playAsync();
         setIsPlaying(true);
       }
     } catch (error) {
       console.log('Error playing audio:', error);
+    }
+  };
+
+  const stopAudio = async () => {
+    try {
+      if (sound) {
+        // Play the audio
+        await sound.pauseAsync();
+        setIsPlaying(false);
+      }
+    } catch (error) {
+      console.log('Error pausing audio:', error);
     }
   };
 
@@ -191,7 +198,12 @@ const Song = ({ accessToken }) => {
               <Text style={styles.artistInfo}>Duration: {songInfo.durationMS}</Text>
             </View>
             <View>
+            {!isPlaying && (
               <Button title="Play" onPress={playAudio} />
+            )}
+            {isPlaying && (
+              <Button title="Stop" onPress={stopAudio} />
+            )}
             </View>
           </View>
         </ScrollView>
