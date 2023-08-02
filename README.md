@@ -16,3 +16,5 @@ npm install
 npx expo start
 ```
 ## Demos
+![Artist](https://github.com/eden-chung/SpotifyReact/assets/20775937/8a0c6d86-0f88-426a-b7d6-a096fe16b1ab)
+
