@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 
 import { useState } from 'react';
 
@@ -12,6 +12,7 @@ const Playlist = ( {accessToken} ) => {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
+    const [topArtists, setTopArtists] = useState(null);
 
 
     async function search(search) {
@@ -34,99 +35,78 @@ const Playlist = ( {accessToken} ) => {
                 console.log("success");
                 var data = await response.json();
 
-                console.log("data is", data)
-                //var data = await response.json();
-                //const artist1 = data.artists.items[0];
-                //const artistId = data.artists.items[0].id
-                //if (artist1) {
-                //  fetchArtistInfo(artist1.href)
-                //  fetchAlbums(artistId)
-                //}
+                //all songs data
+                const allsongs = data.items;
+                //console.log("allsongs", allsongs[0].track);
+
+                const artistFrequencyMap = {};
+                for (const item of allsongs) {
+                    console.log("item", item.track.artists[0].name);
+                    const artist = item.track.artists[0].name;
+                    console.log("artist", item.track.artists[0].href);
+                    //fetchAlbumCover(item.track.artists[0].href)
+                    if (artistFrequencyMap[artist]) {
+                        artistFrequencyMap[artist]++;
+                    } else {
+                        artistFrequencyMap[artist] = 1;
+                    }
+                }
+            
+                const artistFrequencyArray = Object.entries(artistFrequencyMap).map(
+                    ([artist, frequency]) => ({ artist, frequency })
+                );
+                artistFrequencyArray.sort((a, b) => b.frequency - a.frequency);
+                
+                const top10Artists = artistFrequencyArray.slice(0, 5);
+                //console.log("Top 10 most common artists:", top10Artists);
+
+                const promises = top10Artists.map((artistData) => fetchAlbumCover(artistData.artist));
+                const artistImageURLs = await Promise.all(promises);
+                console.log("urls", artistImageURLs);
+
+                const topArtistsWithImages = top10Artists.map((artistData, index) => ({
+                    ...artistData,
+                    imageURL: artistImageURLs[index],
+                  }));
+
+                setTopArtists(topArtistsWithImages);
+                //console.log("top", topArtistsWithImages);
+            } else {
+                console.log('Error3:', response.status);
+            }
+        } catch (error) {
+            console.log('Error4:', error.message);
+        }  
+    } 
+
+    async function fetchAlbumCover(artistHref) {
+        var searchParameters = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken
+            }
+        }
+        try {
+            var response = await fetch(artistHref, searchParameters)
+            if (response.status === 200) {
+                var dataArtist = await response.json();
+                artistImageURL = dataArtist.images[0].url;
+                console.log("artistImageURL", artistImageURL);
+                return artistImageURL;
             } else {
                 console.log('Error:', response.status);
             }
         } catch (error) {
             console.log('Error:', error.message);
         }
-
-
-        async function fetchPlaylist(artistHref) {
-            console.log(data.artists.items[0].href)
-
-            var searchParameters = {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + accessToken
-                }
-            }
-
-            try {
-                var response = await fetch(artistHref, searchParameters)
-                if (response.status === 200) {
-                    var dataArtist = await response.json();
-                    artistName = dataArtist.name
-                    artistImageURL = dataArtist.images[0].url
-                    genre = dataArtist.genres[0]
-                    popularity = dataArtist.popularity
-                    followers = dataArtist.followers.total
-                    console.log("test", artistName, artistImageURL, genre, popularity, followers)
-                    setArtistInfo({
-                        name: artistName,
-                        imageURL: artistImageURL,
-                        genre: genre,
-                        popularity: popularity,
-                        followers: followers
-                    });
-                } else {
-                    console.log('Error:', response.status);
-                }
-            } catch (error) {
-                console.log('Error:', error.message);
-            }
-        }
-
-        {/*
-        async function fetchAlbums(artistId) {
-
-            var searchParameters = {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + accessToken
-                }
-            }
-
-            try {
-                var response = await fetch('https://api.spotify.com/v1/artists/' + artistId + '/albums', searchParameters);
-
-                if (response.status === 200) {
-                    var dataAlbums = await response.json();
-                    
-                    const albums = dataAlbums.items.map((album) => {
-                        return {
-                            name: album.name,
-                            albumImageURL: album.images[0].url,
-                            albumReleaseDate: album.release_date,
-                            albumTotalTracks: album.total_tracks,
-                        };
-                    });
-                    setAlbumsInfo({
-                        albums
-                    });
-                } else {
-                  console.log('Error:', response.status);
-                }
-            } catch (error) {
-              console.log('Error:', error.message);
-            }
-        }
-    */}
-
     }
+
+
   
     return (
         <View style={{flex: 1, backgroundColor: "#121212"}}>
+
             <View style={{
                 justifyContent: "center",
                 alignItems: "center",
@@ -169,7 +149,36 @@ const Playlist = ( {accessToken} ) => {
                         }}
                     />
                 </TouchableOpacity>
-            </View>  
+            </View>
+
+            {topArtists && (
+                <ScrollView style={{ paddingTop: 50 }}>
+                    <Box alignItems="center">
+                        <Heading style={{color: "white"}}>Your top artists on this playlist</Heading>
+                        <View 
+                            style={{
+                                width: 300,
+                                overflow: "hidden",
+                              }}
+                        >
+                            {topArtists.map((artistData, index) => (
+                                <VStack mt={4} space={2}>
+                                    <Box key={index} p={4} borderWidth={2} borderColor="gray.300" borderRadius="md" style={{backgroundColor:"white"}}>
+                                        <Flex flexDirection="row">
+                                            <Image source={{ uri: artistData.imageURL }} width={100} height={100}/>
+                                            <VStack ml="5">
+                                                <Text style={{color:"black"}}>imageURL{artistData.imageURL}</Text>
+                                                <Text fontWeight="bold" fontSize="lg" style={{ flexWrap: 'wrap', maxWidth: 145 }}>{artistData.artist}</Text>
+                                                <Text style={{ flexWrap: 'wrap', maxWidth: 145 }}>Number of tracks: {artistData.frequency}</Text>
+                                            </VStack>
+                                        </Flex>
+                                    </Box>
+                                </VStack>
+                            ))}
+                        </View>
+                    </Box>
+                </ScrollView>
+            )}
         </View>
     )
 }

@@ -74,6 +74,7 @@ const Artist = ({ accessToken }) => {
                     var dataArtist = await response.json();
                     artistName = dataArtist.name
                     artistImageURL = dataArtist.images[0].url
+                    console.log("artistImageURL")
                     genre = dataArtist.genres[0]
                     popularity = dataArtist.popularity
                     followers = dataArtist.followers.total
