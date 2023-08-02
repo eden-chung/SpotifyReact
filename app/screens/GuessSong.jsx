@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 
 const GuessSong = () => {
   return (
-    <View style={styles.container}>
+    <View>
       <Text>Test</Text>
     </View>
   )
