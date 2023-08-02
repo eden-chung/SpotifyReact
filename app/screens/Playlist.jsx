@@ -125,7 +125,7 @@ const Playlist = ( {accessToken} ) => {
                 >
                     <TextInput 
                         value ={searchTerm}
-                        placeholder="Enter your Spotify playlist link"
+                        placeholder="Enter your Spotify playlist id"
                         placeholderTextColor="grey"
                         onChangeText={text => setSearchTerm(text)}
                     />
