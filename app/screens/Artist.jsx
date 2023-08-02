@@ -16,7 +16,11 @@ const formatDate = (dateString) => {
     const month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(date);
     const year = date.getFullYear();
     return `${day}${day === 1 ? 'st' : day === 2 ? 'nd' : day === 3 ? 'rd' : 'th'} ${month}, ${year}`;
-  };
+};
+
+const addCommasToNumber = (number) => {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
   
 
 const Artist = ({ accessToken }) => {
@@ -63,9 +67,9 @@ const Artist = ({ accessToken }) => {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + accessToken
                 }
-          }
+            }
 
-          try {
+            try {
                 var response = await fetch(artistHref, searchParameters)
                 if (response.status === 200) {
                     var dataArtist = await response.json();
@@ -161,24 +165,23 @@ const Artist = ({ accessToken }) => {
                 </TouchableOpacity>
             </View>  
             <View style={styles.tabsContainer}>
-              <FlatList 
-                data={[1]}
-                renderItem={({item}) => (
-                  <TouchableOpacity
-                  >
-                    <Text>{item}</Text>
-                  </TouchableOpacity>
-                )}
-                keyExtractor={item => item}
-                contentContainerStyle={{columnGap: SIZES.small}}
-                horizontal
-              />
+                <FlatList 
+                  data={[1]}
+                  renderItem={({item}) => (
+                      <TouchableOpacity>
+                          <Text>{item}</Text>
+                      </TouchableOpacity>
+                  )}
+                  keyExtractor={item => item}
+                  contentContainerStyle={{columnGap: SIZES.small}}
+                  horizontal
+                />
             </View>
 
 
             {/* Rendering the artist info */}
             {searchResults.map((artist) => (
-            <Text key={artist.id}>{artist.name}</Text>
+                <Text key={artist.id}>{artist.name}</Text>
             ))}
 
 
@@ -209,7 +212,7 @@ const Artist = ({ accessToken }) => {
                                         _dark={{color: "violet.400"}} 
                                         fontWeight="500" ml="-0.5" mt="-1"
                                     >
-                                        {artistInfo.followers} followers
+                                        {addCommasToNumber(artistInfo.followers)} followers
                                     </Text>
                                 </Stack>
                                 <VStack>
@@ -217,7 +220,7 @@ const Artist = ({ accessToken }) => {
                                         Genre: {artistInfo.genre}
                                     </Text>
                                     <Text fontWeight="400">
-                                        Popularity: {artistInfo.popularity}
+                                        Popularity: {artistInfo.popularity}/100
                                     </Text>
                                 </VStack>
                                 <Button onPress={handleShowAlbums} mt={4} variant="outline">
