@@ -1,4 +1,4 @@
-import { Button, View, ScrollView, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { View, ScrollView, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 
 import { useState } from 'react';
 import { Stack, useNavigation, useRouter } from 'expo-router';
@@ -37,19 +37,73 @@ const WelcomePage = () => {
             </View>
 
             <View style={styles.buttonSheet}>
-                <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Artist')}>
-                <Text style={styles.buttons}>Artist information</Text>
+                <TouchableOpacity 
+                    style={{
+                    flex: 2,
+                    backgroundColor: COLORS.green,
+                    marginRight: SIZES.small,
+                    marginBottom: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: SIZES.medium,
+                    height: "100%",
+                    flexBasis: "45%",
+                    justifyContent: "center"
+                    }}
+                    onPress={() => navigation.navigate('Artist')}
+                >
+                    <Text style={styles.buttons}>Artist information</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Song')}>
-                <Text style={styles.buttons}>Song information</Text>
+                <TouchableOpacity 
+                    style={{
+                    flex: 2,
+                    backgroundColor: COLORS.green,
+                    marginRight: SIZES.small,
+                    marginBottom: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: SIZES.medium,
+                    height: "100%",
+                    flexBasis: "45%",
+                    justifyContent: "center"
+                    }}
+                    onPress={() => navigation.navigate('Song')}
+                >
+                    <Text style={styles.buttons}>Song information</Text>
                 </TouchableOpacity>
-
-                <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Playlist')}>
-                <Text style={styles.buttons}>Playlist analyzer</Text>
+                <TouchableOpacity 
+                    style={{
+                    flex: 2,
+                    backgroundColor: COLORS.green,
+                    marginRight: SIZES.small,
+                    marginBottom: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: SIZES.medium,
+                    height: "100%",
+                    flexBasis: "45%",
+                    justifyContent: "center"
+                    }}
+                    onPress={() => navigation.navigate('Playlist')}
+                >
+                    <Text style={styles.buttons}>Playlist analyzer</Text>
                 </TouchableOpacity>
-
-                <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Song')}>
+                <TouchableOpacity 
+                    style={{
+                    flex: 2,
+                    backgroundColor: COLORS.green,
+                    marginRight: SIZES.small,
+                    marginBottom: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: SIZES.medium,
+                    height: "100%",
+                    flexBasis: "45%",
+                    justifyContent: "center"
+                    }}
+                    onPress={() => navigation.navigate('Song')}
+                >
                 <Text style={styles.buttons}>Guess the song game</Text>
                 </TouchableOpacity>
             </View>

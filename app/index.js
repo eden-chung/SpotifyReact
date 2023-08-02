@@ -21,6 +21,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { acc } from 'react-native-reanimated';
+import { NativeBaseProvider, Box } from 'native-base';
 
 
 
@@ -79,15 +80,17 @@ const Home = () => {
   };
   console.log(accessToken)
   return(
-  <NavigationContainer independent={true}>
-    <Drawer.Navigator drawerContent={Sidebar} screenOptions = {{drawerStyle: {width: Dimensions.get("screen").width * 0.5 }}}>
-      <Drawer.Screen name="WelcomePage" component={WelcomePage} />
-      <Drawer.Screen name="Artist" component={() => <Artist accessToken={accessToken} />}/>
-      <Drawer.Screen name="Song" component={() => <Song accessToken={accessToken} />} />
-      <Drawer.Screen name="Playlist" component={Playlist} />
-      <Drawer.Screen name="GuessSong" component={GuessSong} />
-    </Drawer.Navigator>
-  </NavigationContainer>
+    <NativeBaseProvider>
+      <NavigationContainer independent={true}>
+        <Drawer.Navigator drawerContent={Sidebar} screenOptions = {{drawerStyle: {width: Dimensions.get("screen").width * 0.5 }}}>
+          <Drawer.Screen name="WelcomePage" component={WelcomePage} />
+          <Drawer.Screen name="Artist" component={() => <Artist accessToken={accessToken} />}/>
+          <Drawer.Screen name="Song" component={() => <Song accessToken={accessToken} />} />
+          <Drawer.Screen name="Playlist" component={Playlist} />
+          <Drawer.Screen name="GuessSong" component={GuessSong} />
+        </Drawer.Navigator>
+      </NavigationContainer>
+  </NativeBaseProvider>
   );
 };
 
