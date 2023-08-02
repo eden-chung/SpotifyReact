@@ -35,20 +35,24 @@ const Playlist = ( {accessToken} ) => {
                 console.log("success");
                 var data = await response.json();
 
-                //all songs data
-                const allsongs = data.items;
-                //console.log("allsongs", allsongs[0].track);
-
+                const artistHrefMap = {};
                 const artistFrequencyMap = {};
-                for (const item of allsongs) {
+
+                // Iterate through all songs to update the artistFrequencyMap and artistHrefMap
+                for (const item of data.items) {
                     console.log("item", item.track.artists[0].name);
                     const artist = item.track.artists[0].name;
-                    console.log("artist", item.track.artists[0].href);
-                    //fetchAlbumCover(item.track.artists[0].href)
+                    const href = item.track.artists[0].href;
+                    
                     if (artistFrequencyMap[artist]) {
                         artistFrequencyMap[artist]++;
                     } else {
                         artistFrequencyMap[artist] = 1;
+                    }
+                
+                    // Store the href in the artistHrefMap if it doesn't exist
+                    if (!artistHrefMap[artist]) {
+                        artistHrefMap[artist] = href;
                     }
                 }
             
@@ -57,20 +61,18 @@ const Playlist = ( {accessToken} ) => {
                 );
                 artistFrequencyArray.sort((a, b) => b.frequency - a.frequency);
                 
-                const top10Artists = artistFrequencyArray.slice(0, 5);
-                //console.log("Top 10 most common artists:", top10Artists);
-
-                const promises = top10Artists.map((artistData) => fetchAlbumCover(artistData.artist));
+                const top10Artists = artistFrequencyArray.slice(0, 10);
+                
+                const promises = top10Artists.map((artistData) => fetchAlbumCover(artistHrefMap[artistData.artist]));
                 const artistImageURLs = await Promise.all(promises);
                 console.log("urls", artistImageURLs);
-
+                
                 const topArtistsWithImages = top10Artists.map((artistData, index) => ({
-                    ...artistData,
-                    imageURL: artistImageURLs[index],
-                  }));
+                  ...artistData,
+                  imageURL: artistImageURLs[index],
+                }));
 
                 setTopArtists(topArtistsWithImages);
-                //console.log("top", topArtistsWithImages);
             } else {
                 console.log('Error3:', response.status);
             }
@@ -92,7 +94,6 @@ const Playlist = ( {accessToken} ) => {
             if (response.status === 200) {
                 var dataArtist = await response.json();
                 artistImageURL = dataArtist.images[0].url;
-                console.log("artistImageURL", artistImageURL);
                 return artistImageURL;
             } else {
                 console.log('Error:', response.status);
@@ -167,7 +168,6 @@ const Playlist = ( {accessToken} ) => {
                                         <Flex flexDirection="row">
                                             <Image source={{ uri: artistData.imageURL }} width={100} height={100}/>
                                             <VStack ml="5">
-                                                <Text style={{color:"black"}}>imageURL{artistData.imageURL}</Text>
                                                 <Text fontWeight="bold" fontSize="lg" style={{ flexWrap: 'wrap', maxWidth: 145 }}>{artistData.artist}</Text>
                                                 <Text style={{ flexWrap: 'wrap', maxWidth: 145 }}>Number of tracks: {artistData.frequency}</Text>
                                             </VStack>
