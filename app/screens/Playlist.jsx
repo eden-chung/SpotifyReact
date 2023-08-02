@@ -16,85 +16,59 @@ const Playlist = ( {accessToken} ) => {
 
 
     async function search(search) {
-        setSearchResults([])
-
-        var searchParameters = {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + accessToken
-            }
-        }
-
-        console.log("searchparams", searchParameters);
-
-        try {
-            console.log("searchparams", searchParameters);
-            var response = await fetch('https://api.spotify.com/v1/playlists/' + search + '/tracks', searchParameters);
-            if (response.status === 200) {
-                console.log("success");
-                var data = await response.json();
-
-                const artistHrefMap = {};
-                const artistFrequencyMap = {};
-
-                // Iterate through all songs to update the artistFrequencyMap and artistHrefMap
-                for (const item of data.items) {
-                    console.log("item", item.track.artists[0].name);
-                    const artist = item.track.artists[0].name;
-                    const href = item.track.artists[0].href;
-                    
-                    if (artistFrequencyMap[artist]) {
-                        artistFrequencyMap[artist]++;
-                    } else {
-                        artistFrequencyMap[artist] = 1;
-                    }
-                
-                    // Store the href in the artistHrefMap if it doesn't exist
-                    if (!artistHrefMap[artist]) {
-                        artistHrefMap[artist] = href;
-                    }
-                }
-            
-                const artistFrequencyArray = Object.entries(artistFrequencyMap).map(
-                    ([artist, frequency]) => ({ artist, frequency })
-                );
-                artistFrequencyArray.sort((a, b) => b.frequency - a.frequency);
-                
-                const top10Artists = artistFrequencyArray.slice(0, 10);
-                
-                const promises = top10Artists.map((artistData) => fetchAlbumCover(artistHrefMap[artistData.artist]));
-                const artistImageURLs = await Promise.all(promises);
-                console.log("urls", artistImageURLs);
-                
-                const topArtistsWithImages = top10Artists.map((artistData, index) => ({
-                  ...artistData,
-                  imageURL: artistImageURLs[index],
-                }));
-
-                setTopArtists(topArtistsWithImages);
-            } else {
-                console.log('Error3:', response.status);
-            }
-        } catch (error) {
-            console.log('Error4:', error.message);
-        }  
-    } 
-
-    async function fetchAlbumCover(artistHref) {
+        setSearchResults([]);
+        const songsPerPage = 100; // Change this value to the desired number of songs per page
+    
         var searchParameters = {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + accessToken
             }
-        }
+        };
+    
         try {
-            var response = await fetch(artistHref, searchParameters)
+            var response = await fetch('https://api.spotify.com/v1/playlists/' + search + '/tracks?limit=' + songsPerPage, searchParameters);
             if (response.status === 200) {
-                var dataArtist = await response.json();
-                artistImageURL = dataArtist.images[0].url;
-                return artistImageURL;
+                var data = await response.json();
+                const totalSongs = data.total;
+                const totalPages = Math.ceil(totalSongs / songsPerPage);
+                
+                const promises = Array.from({ length: totalPages }, (_, pageIndex) => {
+                    const offset = pageIndex * songsPerPage;
+                    return fetch('https://api.spotify.com/v1/playlists/' + search + '/tracks?limit=' + songsPerPage + '&offset=' + offset, searchParameters)
+                    .then((response) => response.json());
+                });
+                
+                const allResponses = await Promise.all(promises);
+                const allSongs = allResponses.flatMap((response) => response.items);
+                
+                const artistFrequencyMap = {};
+                for (const item of allSongs) {
+                    const artist = item.track.artists[0].name;
+                    if (artistFrequencyMap[artist]) {
+                    artistFrequencyMap[artist]++;
+                    } else {
+                    artistFrequencyMap[artist] = 1;
+                    }
+                }
+                
+                const artistFrequencyArray = Object.entries(artistFrequencyMap).map(
+                    ([artist, frequency]) => ({ artist, frequency })
+                );
+                artistFrequencyArray.sort((a, b) => b.frequency - a.frequency);
+                    
+                const top10Artists = artistFrequencyArray.slice(0, 10);
+                    
+                const promisesForImages = top10Artists.map((artistData) => fetchAlbumCover(artistData.artist));
+                const artistImageURLs = await Promise.all(promisesForImages);
+                    
+                const topArtistsWithImages = top10Artists.map((artistData, index) => ({
+                    ...artistData,
+                    imageURL: artistImageURLs[index],
+                }));
+                
+                setTopArtists(topArtistsWithImages);
             } else {
                 console.log('Error:', response.status);
             }
@@ -103,6 +77,31 @@ const Playlist = ( {accessToken} ) => {
         }
     }
 
+    async function fetchAlbumCover(artistName) {
+        var searchParameters = {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + accessToken
+            }
+        };
+
+        try {
+            var response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(artistName)}&type=artist`, searchParameters);
+            if (response.status === 200) {
+                var dataArtist = await response.json();
+                const artist = dataArtist.artists.items.find((item) => item.name === artistName);
+                const artistImageURL = artist ? (artist.images[0]?.url || null) : null;
+                return artistImageURL;
+            } else {
+                console.log('Error:', response.status);
+                return null;
+            }
+        } catch (error) {
+            console.log('Error:', error.message);
+            return null;
+        }
+    }
 
   
     return (
