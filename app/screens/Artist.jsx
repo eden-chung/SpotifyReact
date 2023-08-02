@@ -37,6 +37,8 @@ const Artist = ({ accessToken }) => {
             }
         }
 
+        console.log("searchparams", searchParameters);
+
         try {
             var response = await fetch('https://api.spotify.com/v1/search?q=' + search + '&type=artist', searchParameters);
             if (response.status === 200) {
