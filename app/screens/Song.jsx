@@ -1,13 +1,10 @@
-import React from 'react'
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native'
+import React from 'react';
+import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native';
 
 import { useState } from 'react';
 import { Button, Box, AspectRatio, Center, Stack, HStack, Heading, VStack, Collapse, Flex } from "native-base";
 
-
-import styles from '../../components/artist.style.jsx'
-
-import {COLORS, icons, SIZES} from '../../constants'
+import {COLORS, icons, SIZES} from '../../constants';
 
 const Song = ({ accessToken }) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -97,8 +94,22 @@ const Song = ({ accessToken }) => {
     return (
         <View style={{flex: 1, backgroundColor: COLORS.blackBg}}>
 
-            <View style={styles.searchContainer}>
-                <View style = {styles.searchWrapper}>
+            <View style={{
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+                marginTop: SIZES.large,
+                height: 50}}
+            >
+                <View style={{
+                    flex: 1,
+                    backgroundColor: COLORS.white,
+                    marginRight: SIZES.small,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: SIZES.medium,
+                    height: "100%"}}
+                >
                     <TextInput 
                         value ={searchTerm}
                         placeholder="Enter a song"
@@ -117,11 +128,15 @@ const Song = ({ accessToken }) => {
                     <Image
                         source={icons.search}
                         resizeMode="contain"
-                        style={styles.searchBtnImage}
+                        style={{
+                            width: "50%",
+                            height: "50%",
+                            tintColor: COLORS.white,
+                        }}
                     />
                 </TouchableOpacity>
             </View>  
-            <View style={styles.tabsContainer}>
+            <View>
                 <FlatList 
                     data={[1]}
                     renderItem={({item}) => (

@@ -1,7 +1,5 @@
-import React from 'react'
-import { View, Text } from 'react-native'
-
-import styles from '../../components/artist.style.jsx'
+import React from 'react';
+import { View, Text } from 'react-native';
 
 const GuessSong = () => {
   return (
@@ -11,4 +9,4 @@ const GuessSong = () => {
   )
 }
 
-export default GuessSong
+export default GuessSong;

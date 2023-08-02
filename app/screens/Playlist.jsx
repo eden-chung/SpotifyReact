@@ -1,14 +1,12 @@
-import React from 'react'
-import { View, Text } from 'react-native'
-
-import styles from '../../components/artist.style.jsx'
+import React from 'react';
+import { View, Text } from 'react-native';
 
 const Playlist = () => {
   return (
-    <View style={styles.container}>
+    <View>
       <Text>Test</Text>
     </View>
   )
 }
 
-export default Playlist
+export default Playlist;

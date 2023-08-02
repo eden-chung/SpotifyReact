@@ -3,10 +3,7 @@ import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, FlatList } 
 
 import { useState } from 'react';
 
-import styles from '../../components/artist.style.jsx'
-
-//import styles from '../../components/welcome.style'
-import {COLORS, icons, SIZES} from '../../constants'
+import {icons} from '../../constants';
 
 import { Button, Box, AspectRatio, Center, Stack, HStack, Heading, VStack, Collapse, Flex } from "native-base";
 
@@ -138,9 +135,23 @@ const Artist = ({ accessToken }) => {
     };
 
     return (
-        <View style={{flex: 1, backgroundColor: COLORS.blackBg}}>
-            <View style={styles.searchContainer}>
-                <View style = {styles.searchWrapper}>
+        <View style={{flex: 1, backgroundColor: "#121212"}}>
+            <View style={{
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+                marginTop: 20,
+                height: 50}}
+            >
+                <View style={{
+                    flex: 1,
+                    backgroundColor: "white",
+                    marginRight: 12,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 16,
+                    height: "100%"}}
+                >
                     <TextInput 
                         value ={searchTerm}
                         placeholder="Enter an artist"
@@ -152,19 +163,23 @@ const Artist = ({ accessToken }) => {
                     width: 50,
                     height: "100%",
                     backgroundColor: "#37c057",
-                    borderRadius: SIZES.medium,
+                    borderRadius: 16,
                     justifyContent: "center",
                     alignItems: "center",}}
                     onPress={() => search(searchTerm)}
                 >
                     <Image
-                      source={icons.search}
-                      resizeMode="contain"
-                      style={styles.searchBtnImage}
+                        source={icons.search}
+                        resizeMode="contain"
+                        style={{
+                            width: "50%",
+                            height: "50%",
+                            tintColor: "white",
+                        }}
                     />
                 </TouchableOpacity>
             </View>  
-            <View style={styles.tabsContainer}>
+            <View>
                 <FlatList 
                   data={[1]}
                   renderItem={({item}) => (
@@ -173,7 +188,7 @@ const Artist = ({ accessToken }) => {
                       </TouchableOpacity>
                   )}
                   keyExtractor={item => item}
-                  contentContainerStyle={{columnGap: SIZES.small}}
+                  contentContainerStyle={{columnGap: 12}}
                   horizontal
                 />
             </View>
