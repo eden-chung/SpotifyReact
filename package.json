@@ -13,6 +13,7 @@
     "@react-navigation/native-stack": "^6.9.12",
     "axios": "^1.4.0",
     "base-64": "^1.0.0",
+    "braces": "^2.3.1",
     "expo": "^48.0.7",
     "expo-av": "~13.2.1",
     "expo-constants": "~14.2.1",
@@ -22,6 +23,7 @@
     "expo-splash-screen": "~0.18.1",
     "expo-status-bar": "~1.4.2",
     "expo-updates": "~0.16.4",
+    "fs-extra": "^11.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.71.8",
@@ -33,7 +35,9 @@
     "react-native-screens": "~3.20.0",
     "react-native-web": "~0.18.7",
     "react-navigation": "^4.4.4",
-    "react-navigation-stack": "^2.10.4"
+    "react-navigation-stack": "^2.10.4",
+    "requireg": "^0.2.2",
+    "whatwg-url": "^13.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
@@ -48,6 +52,7 @@
     "metro-resolver": "^0.73.7"
   },
   "name": "reactnativeapp",
+  "main": "index.js",
   "version": "1.0.0",
   "private": true
 }
