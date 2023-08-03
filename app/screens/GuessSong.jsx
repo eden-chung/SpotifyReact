@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, TextInput, Image, Alert } from 'react-native';
-
+import { View, Text, TouchableOpacity, TextInput, Image } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
+import { Audio } from 'expo-av';
+import { Button, VStack } from 'native-base';
 
 import {icons} from '../../constants';
 
-import { Audio } from 'expo-av';
-import { Button, VStack } from 'native-base';
+
 
 
 
@@ -15,9 +15,7 @@ const GuessSong = ({accessToken}) => {
     const soundObjectRef = useRef(null);
 
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
     const [songDictionary, setSongDictionary] = useState([]);
-    const [isPlaying, setIsPlaying] = useState(false);
     const [isGameStarted, setIsGameStarted] = useState(false);
     const [dicIsEmpty, setIsEmpty] = useState(true);
     const [guess, setGuess] = useState('');
@@ -27,9 +25,9 @@ const GuessSong = ({accessToken}) => {
     const [showNextButton, setShowNextButton] = useState(false);
     const [timer, setTimer] = useState(0);
     const [startTimer, setStartTimer] = useState(false);
+    const [timeoutId, setTimeoutId] = useState(null);
  
     async function search(search) {
-        setSearchResults([]);
         const songsPerPage = 100; // Change this value to the desired number of songs per page
     
         var searchParameters = {
@@ -106,22 +104,27 @@ const GuessSong = ({accessToken}) => {
             const soundObject = new Audio.Sound();
             await soundObject.loadAsync({ uri: mp3Url });
             await soundObject.playAsync();
-            soundObject.setOnPlaybackStatusUpdate((status) => {
-                if (status.didJustFinish) {
-                    setIsPlaying(false); // Set isPlaying to false when the audio finishes playing
-                }
-            });
-            setIsPlaying(true);
+            soundObjectRef.current = soundObject;
+
             setCurrentPlayingSong(songName);
             setGuessResult(null);
             setStartTimer(true);
-            soundObjectRef.current = soundObject;
+            setGuess("");
+
+            setTimeout(() => {
+                setGuessResult(`You could not guess it! This is the song: ${songName}`);
+                setShowNextButton(true);
+                setStartTimer(false);
+            }, 30000);
+
+            setTimeoutId(timeoutId);
         } catch (error) {
             console.log('Error playing audio:', error);
         }
     };
 
     const playRandomSong = () => {
+        setTimer(0);
         setIsGameStarted(true);
         const songNames = Object.keys(songDictionary);
         if (songNames.length > 0) {
@@ -147,29 +150,47 @@ const GuessSong = ({accessToken}) => {
             setStartTimer(false)
         } else {
             setGuessResult('Incorrect. Try again');
-        }
-    
-        if (guessTimer) {
             clearTimeout(guessTimer);
+            setGuessTimer(
+                setTimeout(() => {
+                    setGuessResult(null);
+                }, 1000)
+            );
         }
-        setGuessTimer(
-            setTimeout(() => {
-                setGuessResult(null);
-            }, 2000)
-        );
+        setGuess('');
     };
 
     const handleNextButtonClick = () => {
+        if (soundObjectRef.current) {
+            stopMusic();
+        }
+
         setShowNextButton(false);
+        setGuessResult(null);
+        setTimer(0);
         playRandomSong();
+
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+    };
+
+    const handleEndGameButtonClick = () => {
+        setIsGameStarted(false);
+        setGuessResult(null);
+        setTimer(0);
+        setCurrentPlayingSong('');
+        setGuess('');
+        setShowNextButton(false);
+        stopMusic();
     };
     
     useEffect(() => {
         setIsEmpty(Object.keys(songDictionary).length === 0);
-        
+
         let interval;
         
-        if (startTimer) {
+        if (startTimer && isGameStarted) {
             interval = setInterval(() => {
             setTimer((prevTimer) => prevTimer + 1);
             }, 1000);
@@ -183,9 +204,6 @@ const GuessSong = ({accessToken}) => {
 
     return (
         <View style={{flex: 1, backgroundColor: "#121212"}}>
-            <TouchableOpacity onPress={playRandomSong}>
-                <Text style={{ color: 'white', fontSize: 20 }}>Play Example Song</Text>
-            </TouchableOpacity>
             <View style={{
                 justifyContent: "center",
                 alignItems: "center",
@@ -195,7 +213,7 @@ const GuessSong = ({accessToken}) => {
             >
                 <View style={{
                     flex: 1,
-                    backgroundColor: "white",
+                    backgroundColor: isGameStarted ? "gray.200" : "white",
                     marginRight: 12,
                     justifyContent: "center",
                     alignItems: "center",
@@ -207,16 +225,18 @@ const GuessSong = ({accessToken}) => {
                         placeholder="Enter your Spotify playlist ID to play the game"
                         placeholderTextColor="grey"
                         onChangeText={text => setSearchTerm(text)}
+                        editable={!isGameStarted}
                     />
                 </View>
                 <TouchableOpacity style={{
                     width: 50,
                     height: "100%",
-                    backgroundColor: "#37c057",
+                    backgroundColor: isGameStarted ? "#999999" : "#37c057",
                     borderRadius: 16,
                     justifyContent: "center",
                     alignItems: "center",}}
                     onPress={() => search(searchTerm)}
+                    disabled={isGameStarted}
                 >
                     <Image
                         source={icons.search}
@@ -229,10 +249,9 @@ const GuessSong = ({accessToken}) => {
                     />
                 </TouchableOpacity>
             </View>
-            <Text style={{ color: 'white', fontSize: 20 }}>{Object.keys(songDictionary).length} length</Text>
-            <Text style={{ color: 'white', fontSize: 20 }}>test</Text>
             {dicIsEmpty === false && (
-                <View style={{ flex: 1, alignItems: 'center'}}>
+                <View style={{ flex: 1, alignItems: "center"}}>
+                    <Text style={{color: "white", marginTop:10}} >Loaded. There are {Object.keys(songDictionary).length} available songs in this playlist</Text>
                     <Button
                         onPress={playRandomSong}
                         style={{
@@ -265,9 +284,9 @@ const GuessSong = ({accessToken}) => {
                     </View>
                     <View>
                     {guessResult && (
-                        <Text style={{ color: guess.toLowerCase() === currentPlayingSong?.toLowerCase() ? "green" : "red", fontSize: 18, marginTop: 30 }}>
+                        <Text style={{ color: guessResult === "Correct!" ? "green" : "red", fontSize: 18, marginTop: 30 }}>
                             {guessResult} 
-                            {guessResult === 'Correct!' && timer ? ` You guessed it in ${timer} seconds` : null}
+                            {guessResult === "Correct!" && timer ? ` You guessed it in ${timer} seconds` : null}
                         </Text>
                     )}
                     </View>
@@ -283,6 +302,16 @@ const GuessSong = ({accessToken}) => {
                             Next
                         </Button>
                     )}
+                    <Button
+                        onPress={handleEndGameButtonClick}
+                        style={{
+                            width: 150,
+                            backgroundColor: isGameStarted === false ? "#999999" : "#37c057",
+                            marginTop: 30,
+                        }}
+                    >
+                        End game
+                    </Button>
                 </View>
             )}
         </View>
