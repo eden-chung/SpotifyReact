@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useState } from 'react';
-import { Button, Box, AspectRatio, Center, Stack, HStack, Heading, VStack, Collapse, Flex } from 'native-base';
-
+import { Box, Heading, VStack, Flex } from 'native-base';
 
 import {icons} from '../../constants';
 
@@ -11,13 +10,10 @@ import {icons} from '../../constants';
 const Playlist = ( {accessToken} ) => {
 
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
     const [topArtists, setTopArtists] = useState(null);
 
-
     async function search(search) {
-        setSearchResults([]);
-        const songsPerPage = 100; // Change this value to the desired number of songs per page
+        const songsPerPage = 100;
     
         var searchParameters = {
             method: 'GET',
@@ -168,7 +164,7 @@ const Playlist = ( {accessToken} ) => {
                                             <Image source={{ uri: artistData.imageURL }} width={100} height={100}/>
                                             <VStack ml="5">
                                                 <Text fontWeight="bold" fontSize="lg" style={{ flexWrap: 'wrap', maxWidth: 145 }}>{artistData.artist}</Text>
-                                                <Text style={{ flexWrap: 'wrap', maxWidth: 145 }}>Number of tracks: {artistData.frequency}</Text>
+                                                <Text style={{ flexWrap: "wrap", maxWidth: 145 }}>Number of tracks: {artistData.frequency}</Text>
                                             </VStack>
                                         </Flex>
                                     </Box>

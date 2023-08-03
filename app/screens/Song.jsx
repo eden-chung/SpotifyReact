@@ -1,8 +1,7 @@
 import React from 'react';
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native';
-
 import { useState } from 'react';
-import { Button, Box, AspectRatio, Center, Stack, HStack, Heading, VStack, Collapse, Flex } from "native-base";
+import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native';
+import { Box, AspectRatio, Stack, Heading, VStack} from 'native-base';
 
 import {COLORS, icons, SIZES} from '../../constants';
 
@@ -57,7 +56,6 @@ const Song = ({ accessToken }) => {
                     songName = dataSong.tracks.items[0].name;
                     artistName = dataSong.tracks.items[0].album.artists[0].name;
                     albumName = dataSong.tracks.items[0].album.name;
-                    console.log(albumName);
                     albumImageURL = dataSong.tracks.items[0].album.images[0].url;
                     durationMS = dataSong.tracks.items[0].duration_ms;
                     popularity = dataSong.tracks.items[0].popularity;

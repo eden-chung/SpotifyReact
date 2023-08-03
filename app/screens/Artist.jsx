@@ -1,11 +1,10 @@
 import React from 'react'
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native'
-
 import { useState } from 'react';
+import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, FlatList } from 'react-native'
+import { Button, Box, AspectRatio, Stack, Heading, VStack, Collapse, Flex } from 'native-base';
 
 import {icons} from '../../constants';
 
-import { Button, Box, AspectRatio, Center, Stack, HStack, Heading, VStack, Collapse, Flex } from "native-base";
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -37,7 +36,7 @@ const Artist = ({ accessToken }) => {
             }
         }
 
-        console.log("searchparams", searchParameters);
+        console.log('searchparams', searchParameters);
 
         try {
             var response = await fetch('https://api.spotify.com/v1/search?q=' + search + '&type=artist', searchParameters);
@@ -74,11 +73,9 @@ const Artist = ({ accessToken }) => {
                     var dataArtist = await response.json();
                     artistName = dataArtist.name
                     artistImageURL = dataArtist.images[0].url
-                    console.log("artistImageURL")
                     genre = dataArtist.genres[0]
                     popularity = dataArtist.popularity
                     followers = dataArtist.followers.total
-                    console.log("test", artistName, artistImageURL, genre, popularity, followers)
                     setArtistInfo({
                         name: artistName,
                         imageURL: artistImageURL,
@@ -242,7 +239,7 @@ const Artist = ({ accessToken }) => {
                                     </Text>
                                 </VStack>
                                 <Button onPress={handleShowAlbums} mt={4} variant="outline">
-                                    {showAlbums ? 'Hide Albums' : 'Show Albums'}
+                                    {showAlbums ? "Hide Albums" : "Show Albums"}
                                 </Button>
                                 <Collapse isOpen={showAlbums}>
                                     <VStack mt={4} space={2}>
@@ -251,9 +248,9 @@ const Artist = ({ accessToken }) => {
                                                 <Flex flexDirection="row">
                                                     <Image source={{uri: album.albumImageURL}} width={100} height={100}/>
                                                     <VStack ml="5">
-                                                        <Text fontWeight="bold" fontSize="lg" style={{ flexWrap: 'wrap', maxWidth: 145 }}>{album.name}</Text>
-                                                        <Text style={{ flexWrap: 'wrap', maxWidth: 145 }}>Release Date: {formatDate(album.albumReleaseDate)}</Text>
-                                                        <Text style={{ flexWrap: 'wrap', maxWidth: 145 }}>Number of tracks: {album.albumTotalTracks}</Text>
+                                                        <Text fontWeight="bold" fontSize="lg" style={{ flexWrap: "wrap", maxWidth: 145 }}>{album.name}</Text>
+                                                        <Text style={{ flexWrap: "wrap", maxWidth: 145 }}>Release Date: {formatDate(album.albumReleaseDate)}</Text>
+                                                        <Text style={{ flexWrap: "wrap", maxWidth: 145 }}>Number of tracks: {album.albumTotalTracks}</Text>
                                                     </VStack>
                                                 </Flex>
                                             </Box>
@@ -266,7 +263,6 @@ const Artist = ({ accessToken }) => {
                 </ScrollView>
             )}
         </View>
-
     )
 }
 

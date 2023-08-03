@@ -1,12 +1,6 @@
-import { Button, View, ScrollView, SafeAreaView, Text, Dimensions } from 'react-native';
-
-import { encode } from 'base-64'
-
+import { SafeAreaView, Text, Dimensions } from 'react-native';
 import { useState, useEffect } from 'react';
-import { Stack, useNavigation, useRouter } from 'expo-router';
-
-import { COLORS, icons, images, SIZES} from '../constants';
-import { Nearbyjobs, Popularartists, WelcomeHeaderBtn, Welcome, DrawerButton} from '../components';
+import {  useNavigation, useRouter } from 'expo-router';
 
 import styles from '../components/sidebar.style'
 
@@ -20,10 +14,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { acc } from 'react-native-reanimated';
 import { NativeBaseProvider, Box } from 'native-base';
-
-import { Audio } from 'expo-av';
 
 
 
@@ -34,7 +25,6 @@ const Home = () => {
     const [accessToken, setAccessToken] = useState("")
 
     useEffect(() => {
-        //const authHeader = 'Basic ' + encode(CLIENT_ID + ':' + CLIENT_SECRET);
         
         var authParameters = {
             method: 'POST',
@@ -57,7 +47,6 @@ const Home = () => {
 
     const Sidebar = () => {
       const navigation = useNavigation();
-        // Add your sidebar content here
         return (
             <SafeAreaView style={styles.background}>
                 <Text>Sidebar Content</Text>
@@ -79,7 +68,6 @@ const Home = () => {
             </SafeAreaView>
         );
     };
-    console.log(accessToken)
     return(
       <NativeBaseProvider>
         <NavigationContainer independent={true}>

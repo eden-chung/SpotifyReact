@@ -2,15 +2,6 @@ import { View, ScrollView, SafeAreaView, Text, TouchableOpacity } from 'react-na
 
 import { useNavigation } from 'expo-router';
 
-const Sidebar = () => {
-    return (
-    <SafeAreaView>
-      {/* Sidebar content */}
-      <Text>Sidebar Content</Text>
-    </SafeAreaView>
-    )
-};
-
 const WelcomePage = () => {
     const navigation = useNavigation();
 
@@ -51,8 +42,8 @@ const WelcomePage = () => {
                     <View style={{
                         flex: 1,
                         color: "white",
-                        flexDirection: 'column',
-                        justifyContent: 'space-around'}}
+                        flexDirection: "column",
+                        justifyContent: "space-around"}}
                     >
                         <TouchableOpacity 
                             style={{
@@ -167,26 +158,3 @@ const WelcomePage = () => {
 }
 
 export default WelcomePage;
-
-{/*
-<Welcome
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}>
-            </Welcome>
-
-For the custom header, but can't get the sidebar to work with it
-<Stack.Screen options = {{
-    title: 'Cool',
-    headerStyle: {backgroundColor: COLORS.lightWhite},
-    headerShadowVisible: false,
-    headerLeft: () => (
-        <WelcomeHeaderBtn iconUrl={icons.menu} dimension="60%" handlePress={pressButton}/>
-    ),
-    headerRight: () => (
-        <WelcomeHeaderBtn iconUrl={images.profile} dimension="100%" handlePress={pressButton}/>
-    ),
-    headerTitle: ""
-    }}/>
-*/
-
-}
