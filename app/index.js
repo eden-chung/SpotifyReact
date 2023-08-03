@@ -23,6 +23,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { acc } from 'react-native-reanimated';
 import { NativeBaseProvider, Box } from 'native-base';
 
+import { Audio } from 'expo-av';
+
 
 
 const Home = () => {
