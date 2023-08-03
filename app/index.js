@@ -86,7 +86,7 @@ const Home = () => {
                 <Drawer.Screen name="Artist" component={() => <Artist accessToken={accessToken} />}/>
                 <Drawer.Screen name="Song" component={() => <Song accessToken={accessToken} />} />
                 <Drawer.Screen name="Playlist" component={() => <Playlist accessToken={accessToken} />} />
-                <Drawer.Screen name="GuessSong" component={GuessSong} />
+                <Drawer.Screen name="GuessSong" component={() => <GuessSong accessToken={accessToken} />}/>
             </Drawer.Navigator>
         </NavigationContainer>
     </NativeBaseProvider>

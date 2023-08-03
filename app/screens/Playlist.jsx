@@ -47,9 +47,9 @@ const Playlist = ( {accessToken} ) => {
                 for (const item of allSongs) {
                     const artist = item.track.artists[0].name;
                     if (artistFrequencyMap[artist]) {
-                    artistFrequencyMap[artist]++;
+                        artistFrequencyMap[artist]++;
                     } else {
-                    artistFrequencyMap[artist] = 1;
+                        artistFrequencyMap[artist] = 1;
                     }
                 }
                 
@@ -125,7 +125,7 @@ const Playlist = ( {accessToken} ) => {
                 >
                     <TextInput 
                         value ={searchTerm}
-                        placeholder="Enter your Spotify playlist id"
+                        placeholder="Enter your Spotify playlist ID"
                         placeholderTextColor="grey"
                         onChangeText={text => setSearchTerm(text)}
                     />

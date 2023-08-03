@@ -146,7 +146,7 @@ const WelcomePage = () => {
                                 flexBasis: "45%",
                                 justifyContent: "center"
                             }}
-                            onPress={() => navigation.navigate('Song')}
+                            onPress={() => navigation.navigate('GuessSong')}
                         >
                             <Text style={{
                                 fontFamily: "Medium",
