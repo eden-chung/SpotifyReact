@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, TextInput, Image } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Image, Alert } from 'react-native';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import {icons} from '../../constants';
 
@@ -11,6 +11,8 @@ import { Button, VStack } from 'native-base';
 
 
 const GuessSong = ({accessToken}) => {
+
+    const soundObjectRef = useRef(null);
 
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -22,6 +24,9 @@ const GuessSong = ({accessToken}) => {
     const [guessTimer, setGuessTimer] = useState('');
     const [guessResult, setGuessResult] = useState(null);
     const [currentPlayingSong, setCurrentPlayingSong] = useState('');
+    const [showNextButton, setShowNextButton] = useState(false);
+    const [timer, setTimer] = useState(0);
+    const [startTimer, setStartTimer] = useState(false);
  
     async function search(search) {
         setSearchResults([]);
@@ -63,7 +68,6 @@ const GuessSong = ({accessToken}) => {
                         songNameToMp3[name] = preview;
                     }
 
-                    //console.log(songNameToMp3)
                     setSongDictionary(songNameToMp3)
                     console.log('dic', songDictionary)
 
@@ -81,20 +85,37 @@ const GuessSong = ({accessToken}) => {
         }
     }
 
+    const stopMusic = async () => {
+        try {
+            if (soundObjectRef.current) {
+                await soundObjectRef.current.stopAsync();
+                await soundObjectRef.current.unloadAsync();
+            }
+        } catch (error) {
+            console.log('Error stopping audio:', error);
+        }
+    };
+      
+
     
     const playMP3 = async (mp3Url, songName) => {
         try {
+            if (soundObjectRef.current) {
+                await soundObjectRef.current.unloadAsync();
+            }
             const soundObject = new Audio.Sound();
             await soundObject.loadAsync({ uri: mp3Url });
             await soundObject.playAsync();
             soundObject.setOnPlaybackStatusUpdate((status) => {
                 if (status.didJustFinish) {
-                  setIsPlaying(false); // Set isPlaying to false when the audio finishes playing
+                    setIsPlaying(false); // Set isPlaying to false when the audio finishes playing
                 }
             });
             setIsPlaying(true);
             setCurrentPlayingSong(songName);
             setGuessResult(null);
+            setStartTimer(true);
+            soundObjectRef.current = soundObject;
         } catch (error) {
             console.log('Error playing audio:', error);
         }
@@ -120,11 +141,12 @@ const GuessSong = ({accessToken}) => {
 
     const checkUserGuess = (userGuess) => {
         if (currentPlayingSong && userGuess.toLowerCase() === currentPlayingSong.toLowerCase()) {
-            setGuessResult('correct');
-            console.log('Congratulations! You guessed the correct song!');
+            setGuessResult('Correct!');
+            setShowNextButton(true);
+            stopMusic();
+            setStartTimer(false)
         } else {
-            setGuessResult('incorrect');
-            console.log('Try again. Your guess did not match the song.');
+            setGuessResult('Incorrect. Try again');
         }
     
         if (guessTimer) {
@@ -135,16 +157,28 @@ const GuessSong = ({accessToken}) => {
                 setGuessResult(null);
             }, 2000)
         );
-      };
-    
+    };
 
+    const handleNextButtonClick = () => {
+        setShowNextButton(false);
+        playRandomSong();
+    };
+    
     useEffect(() => {
-        console.log('dic', songDictionary);
-        console.log('diclength', Object.keys(songDictionary).length);
-    
         setIsEmpty(Object.keys(songDictionary).length === 0);
-      }, [songDictionary]);
-    
+        
+        let interval;
+        
+        if (startTimer) {
+            interval = setInterval(() => {
+            setTimer((prevTimer) => prevTimer + 1);
+            }, 1000);
+        }
+        
+        return () => {
+            clearInterval(interval);
+        };
+    }, [songDictionary, startTimer]);
     
 
     return (
@@ -229,6 +263,26 @@ const GuessSong = ({accessToken}) => {
                         onSubmitEditing={() => checkUserGuess(guess)}
                     />
                     </View>
+                    <View>
+                    {guessResult && (
+                        <Text style={{ color: guess.toLowerCase() === currentPlayingSong?.toLowerCase() ? "green" : "red", fontSize: 18, marginTop: 30 }}>
+                            {guessResult} 
+                            {guessResult === 'Correct!' && timer ? ` You guessed it in ${timer} seconds` : null}
+                        </Text>
+                    )}
+                    </View>
+                    {showNextButton && (
+                        <Button
+                            onPress={handleNextButtonClick}
+                            style={{
+                                width: 150,
+                                backgroundColor: "#37c057",
+                                marginTop: 30,
+                            }}
+                        >
+                            Next
+                        </Button>
+                    )}
                 </View>
             )}
         </View>
